@@ -42,43 +42,43 @@ extern "C" {
 
 /*!< Attention: Select your hardware connection mode here.
 * */
-#define CONFIG_HARDWARE_CONNECTION DJI_USE_UART_AND_NETWORK_DEVICE
+#define CONFIG_HARDWARE_CONNECTION DJI_USE_ONLY_UART
 
 /*!< Attention: Select the sample you want to run here.
 * */
-#define CONFIG_MODULE_SAMPLE_POWER_MANAGEMENT_ON            true
+#define CONFIG_MODULE_SAMPLE_POWER_MANAGEMENT_ON            false
 
-#define CONFIG_MODULE_SAMPLE_DATA_TRANSMISSION_ON           true
+#define CONFIG_MODULE_SAMPLE_DATA_TRANSMISSION_ON           false
 
-#define CONFIG_MODULE_SAMPLE_WIDGET_ON                      true
+#define CONFIG_MODULE_SAMPLE_WIDGET_ON                      false
 
-#define CONFIG_MODULE_SAMPLE_WIDGET_SPEAKER_ON              true
+#define CONFIG_MODULE_SAMPLE_WIDGET_SPEAKER_ON              false
 
-#define CONFIG_MODULE_SAMPLE_UPGRADE_ON                     true
+#define CONFIG_MODULE_SAMPLE_UPGRADE_ON                     false
 
-#define CONFIG_MODULE_SAMPLE_CAMERA_EMU_ON                  true
+#define CONFIG_MODULE_SAMPLE_CAMERA_EMU_ON                  false
 
-#define CONFIG_MODULE_SAMPLE_CAMERA_MEDIA_ON                true
+#define CONFIG_MODULE_SAMPLE_CAMERA_MEDIA_ON                false
 
-#define CONFIG_MODULE_SAMPLE_FC_SUBSCRIPTION_ON             true
+#define CONFIG_MODULE_SAMPLE_FC_SUBSCRIPTION_ON             false
 
-#define CONFIG_MODULE_SAMPLE_GIMBAL_EMU_ON                  true
+#define CONFIG_MODULE_SAMPLE_GIMBAL_EMU_ON                  false
 
-#define CONFIG_MODULE_SAMPLE_XPORT_ON                       true
+#define CONFIG_MODULE_SAMPLE_XPORT_ON                       false
 
 #define CONFIG_MODULE_SAMPLE_PAYLOAD_COLLABORATION_ON       false
 
-#define CONFIG_MODULE_SAMPLE_HMS_CUSTOMIZATION_ON           true
+#define CONFIG_MODULE_SAMPLE_HMS_CUSTOMIZATION_ON           false
 
 /*!< Attention: This function needs to be used together with mobile sdk mop sample.
 * */
 #define CONFIG_MODULE_SAMPLE_MOP_CHANNEL_ON false
 
-#define CONFIG_MODULE_SAMPLE_TETHERED_BATTERY_ON            true
+#define CONFIG_MODULE_SAMPLE_TETHERED_BATTERY_ON            false
 
 #define CONFIG_MODULE_SAMPLE_TIME_SYNC_ON                   false
 
-#define CONFIG_MODULE_SAMPLE_POSITIONING_ON                 false
+#define CONFIG_MODULE_SAMPLE_POSITIONING_ON                 true
 
 /* Exported types ------------------------------------------------------------*/
 

@@ -181,51 +181,12 @@ void Application::DjiUser_SetupEnvironment()
         throw std::runtime_error("register hal i2c handler error");
     }
 
-#if (CONFIG_HARDWARE_CONNECTION == DJI_USE_UART_AND_USB_BULK_DEVICE)
-    returnCode = DjiPlatform_RegHalUartHandler(&uartHandler);
-    if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-        throw std::runtime_error("Register hal uart handler error.");
-    }
-
-    returnCode = DjiPlatform_RegHalUsbBulkHandler(&usbBulkHandler);
-    if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-        throw std::runtime_error("Register hal usb bulk handler error.");
-    }
-#elif (CONFIG_HARDWARE_CONNECTION == DJI_USE_UART_AND_NETWORK_DEVICE)
-    returnCode = DjiPlatform_RegHalUartHandler(&uartHandler);
-    if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-        throw std::runtime_error("Register hal uart handler error.");
-    }
-
-    returnCode = DjiPlatform_RegHalNetworkHandler(&networkHandler);
-    if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-        throw std::runtime_error("Register hal network handler error");
-    }
-#elif (CONFIG_HARDWARE_CONNECTION == DJI_USE_ONLY_USB_BULK_DEVICE)
-    returnCode = DjiPlatform_RegHalUsbBulkHandler(&usbBulkHandler);
-    if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-        throw std::runtime_error("Register hal network handler error");
-    }
-
-#elif (CONFIG_HARDWARE_CONNECTION == DJI_USE_ONLY_NETWORK_DEVICE)
-    returnCode = DjiPlatform_RegHalNetworkHandler(&networkHandler);
-    if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-        throw std::runtime_error("Register hal network handler error");
-    }
-
-    //Attention: if you want to use camera stream view function, please uncomment it.
-    returnCode = DjiPlatform_RegSocketHandler(&socketHandler);
-    if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-        throw std::runtime_error("register osal socket handler error");
-    }
-#elif (CONFIG_HARDWARE_CONNECTION == DJI_USE_ONLY_UART)
     /*!< Attention: Only use uart hardware connection.
      */
     returnCode = DjiPlatform_RegHalUartHandler(&uartHandler);
     if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
         throw std::runtime_error("Register hal uart handler error.");
     }
-#endif
 
     //Attention: if you want to use camera stream view function, please uncomment it.
     returnCode = DjiPlatform_RegSocketHandler(&socketHandler);
@@ -278,7 +239,7 @@ void Application::DjiUser_ApplicationStart()
         throw std::runtime_error("Set firmware version error.");
     }
 
-    returnCode = DjiCore_SetSerialNumber("PSDK12345678XX");
+    returnCode = DjiCore_SetSerialNumber("PML-HF002");
     if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
         throw std::runtime_error("Set serial number error");
     }
@@ -300,68 +261,16 @@ void Application::DjiUser_ApplicationStart()
         throw std::runtime_error("Please run this sample on extension port or skyport v3.");
     }
 
-    returnCode = DjiCore_SetAlias("PSDK_APPALIAS");
+    returnCode = DjiCore_SetAlias("Hy-Fly");
     if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
         throw std::runtime_error("Set alias error.");
     }
-
-#ifdef CONFIG_MODULE_SAMPLE_CAMERA_EMU_ON
-        returnCode = DjiTest_CameraEmuBaseStartService();
-        if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-            USER_LOG_ERROR("camera emu common init error");
-        }
-#endif
-
-#ifdef CONFIG_MODULE_SAMPLE_CAMERA_MEDIA_ON
-        returnCode = DjiTest_CameraEmuMediaStartService();
-        if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-            USER_LOG_ERROR("camera emu media init error");
-        }
-#endif
-
-#ifdef CONFIG_MODULE_SAMPLE_GIMBAL_EMU_ON
-        returnCode = DjiTest_GimbalStartService();
-        if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-            USER_LOG_ERROR("psdk gimbal init error");
-        }
-#endif
 
 #ifdef CONFIG_MODULE_SAMPLE_WIDGET_ON
         returnCode = DjiTest_WidgetStartService();
         if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
             USER_LOG_ERROR("widget sample init error");
         }
-#endif
-
-#ifdef CONFIG_MODULE_SAMPLE_WIDGET_SPEAKER_ON
-        returnCode = DjiTest_WidgetSpeakerStartService();
-        if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-            USER_LOG_ERROR("widget speaker test init error");
-        }
-#endif
-
-#ifdef CONFIG_MODULE_SAMPLE_POWER_MANAGEMENT_ON
-    T_DjiTestApplyHighPowerHandler applyHighPowerHandler = {
-        .pinInit = DjiTest_HighPowerApplyPinInit,
-        .pinWrite = DjiTest_WriteHighPowerApplyPin,
-    };
-
-    returnCode = DjiTest_RegApplyHighPowerHandler(&applyHighPowerHandler);
-    if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-        USER_LOG_ERROR("regsiter apply high power handler error");
-    }
-
-    returnCode = DjiTest_PowerManagementStartService();
-    if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-        USER_LOG_ERROR("power management init error");
-    }
-#endif
-
-#ifdef CONFIG_MODULE_SAMPLE_DATA_TRANSMISSION_ON
-    returnCode = DjiTest_DataTransmissionStartService();
-    if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-        USER_LOG_ERROR("widget sample init error");
-    }
 #endif
 
     returnCode = DjiCore_ApplicationStart();

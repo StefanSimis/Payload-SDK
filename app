@@ -1,0 +1,1 @@
+samples/sample_c++/platform/linux/raspberry_pi

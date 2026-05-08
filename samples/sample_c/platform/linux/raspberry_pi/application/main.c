@@ -134,7 +134,8 @@ int main(int argc, char **argv)
         return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
     }
 
-    returnCode = DjiCore_SetSerialNumber("PSDK12345678XX");
+    //returnCode = DjiCore_SetSerialNumber("PSDK12345678XX");
+    returnCode = DjiCore_SetSerialNumber("PML_FH002");
     if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
         USER_LOG_ERROR("set serial number error");
         return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
@@ -148,7 +149,7 @@ int main(int argc, char **argv)
         return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
     }
 
-    returnCode = DjiCore_SetAlias("PSDK_APPALIAS");
+    returnCode = DjiCore_SetAlias("Hy-Fly");
     if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
         USER_LOG_ERROR("set alias error");
         return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
@@ -170,144 +171,11 @@ int main(int argc, char **argv)
     }
 
     /*!< Step 4: Initialize the selected modules by macros in dji_sdk_config.h . */
-    #if CONFIG_MODULE_SAMPLE_POWER_MANAGEMENT_ON
-        T_DjiTestApplyHighPowerHandler applyHighPowerHandler = {
-            .pinInit = DjiTest_HighPowerApplyPinInit,
-            .pinWrite = DjiTest_WriteHighPowerApplyPin,
-        };
-
-        returnCode = DjiTest_RegApplyHighPowerHandler(&applyHighPowerHandler);
-        if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-            USER_LOG_ERROR("regsiter apply high power handler error");
-        }
-
-        returnCode = DjiTest_PowerManagementStartService();
-        if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-            USER_LOG_ERROR("power management init error");
-        }
-    #endif
-
-    #if CONFIG_MODULE_SAMPLE_DATA_TRANSMISSION_ON
-        returnCode = DjiTest_DataTransmissionStartService();
-        if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-            USER_LOG_ERROR("data tramsmission sample init error");
-        }
-    #endif
-
+    // stsi: simplified to just the ones we use
     #if CONFIG_MODULE_SAMPLE_WIDGET_ON
         returnCode = DjiTest_WidgetInteractionStartService();
         if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
             USER_LOG_ERROR("widget sample init error");
-        }
-    #endif
-
-    #if CONFIG_MODULE_SAMPLE_WIDGET_SPEAKER_ON
-        returnCode = DjiTest_WidgetSpeakerStartService();
-        if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-            USER_LOG_ERROR("widget speaker test init error");
-        }
-    #endif
-
-    if (aircraftInfoBaseInfo.mountPosition == DJI_MOUNT_POSITION_EXTENSION_PORT &&
-        (aircraftInfoBaseInfo.aircraftType == DJI_AIRCRAFT_TYPE_M300_RTK ||
-         aircraftInfoBaseInfo.aircraftType == DJI_AIRCRAFT_TYPE_M350_RTK)) {
-        // TODO: something is no support on E-Port of M300/M350 ???
-    } else {
-        #if CONFIG_MODULE_SAMPLE_CAMERA_EMU_ON
-            returnCode = DjiTest_CameraEmuBaseStartService();
-            if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-                USER_LOG_ERROR("camera emu common init error");
-            }
-        #endif
-
-        #if CONFIG_MODULE_SAMPLE_CAMERA_MEDIA_ON
-            returnCode = DjiTest_CameraEmuMediaStartService();
-            if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-                USER_LOG_ERROR("camera emu media init error");
-            }
-        #endif
-
-        #if CONFIG_MODULE_SAMPLE_FC_SUBSCRIPTION_ON
-            returnCode = DjiTest_FcSubscriptionStartService();
-            if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-                USER_LOG_ERROR("data subscription sample init error\n");
-            }
-        #endif
-
-        #if CONFIG_MODULE_SAMPLE_GIMBAL_EMU_ON
-            if (aircraftInfoBaseInfo.djiAdapterType == DJI_SDK_ADAPTER_TYPE_SKYPORT_V2 ||
-                aircraftInfoBaseInfo.djiAdapterType == DJI_SDK_ADAPTER_TYPE_EPORT_V2_RIBBON_CABLE ||
-                aircraftInfoBaseInfo.djiAdapterType == DJI_SDK_ADAPTER_TYPE_SKYPORT_V3 ||
-                aircraftInfoBaseInfo.djiAdapterType == DJI_SDK_ADAPTER_TYPE_NONE) {
-                if (DjiTest_GimbalStartService() != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-                    USER_LOG_ERROR("psdk gimbal init error");
-                }
-            }
-        #endif
-
-        #if CONFIG_MODULE_SAMPLE_XPORT_ON
-            if (aircraftInfoBaseInfo.djiAdapterType == DJI_SDK_ADAPTER_TYPE_XPORT) {
-                if (DjiTest_XPortStartService() != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-                    USER_LOG_ERROR("psdk xport init error");
-                }
-            }
-        #endif
-
-    #if CONFIG_MODULE_SAMPLE_MOP_CHANNEL_ON
-        returnCode = DjiTest_MopChannelStartService();
-        if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-            USER_LOG_ERROR("mop channel sample init error");
-        }
-    #endif
-
-        #if CONFIG_MODULE_SAMPLE_PAYLOAD_COLLABORATION_ON
-            if (aircraftInfoBaseInfo.djiAdapterType == DJI_SDK_ADAPTER_TYPE_SKYPORT_V2 ||
-                aircraftInfoBaseInfo.djiAdapterType == DJI_SDK_ADAPTER_TYPE_XPORT) {
-                returnCode = DjiTest_PayloadCollaborationStartService();
-                if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-                    USER_LOG_ERROR("Payload collaboration sample init error\n");
-                }
-            }
-        #endif
-    }
-
-    #if CONFIG_MODULE_SAMPLE_UPGRADE_ON
-        T_DjiTestUpgradePlatformOpt linuxUpgradePlatformOpt = {
-            .rebootSystem = DjiUpgradePlatformLinux_RebootSystem,
-            .cleanUpgradeProgramFileStoreArea = DjiUpgradePlatformLinux_CleanUpgradeProgramFileStoreArea,
-            .createUpgradeProgramFile = DjiUpgradePlatformLinux_CreateUpgradeProgramFile,
-            .writeUpgradeProgramFile = DjiUpgradePlatformLinux_WriteUpgradeProgramFile,
-            .readUpgradeProgramFile = DjiUpgradePlatformLinux_ReadUpgradeProgramFile,
-            .closeUpgradeProgramFile = DjiUpgradePlatformLinux_CloseUpgradeProgramFile,
-            .replaceOldProgram = DjiUpgradePlatformLinux_ReplaceOldProgram,
-            .setUpgradeRebootState = DjiUpgradePlatformLinux_SetUpgradeRebootState,
-            .getUpgradeRebootState = DjiUpgradePlatformLinux_GetUpgradeRebootState,
-            .cleanUpgradeRebootState = DjiUpgradePlatformLinux_CleanUpgradeRebootState,
-        };
-        T_DjiTestUpgradeConfig testUpgradeConfig = {
-            .firmwareVersion = firmwareVersion,
-            .transferType = DJI_FIRMWARE_TRANSFER_TYPE_DCFTP,
-            .needReplaceProgramBeforeReboot = true
-        };
-        if (DjiTest_UpgradeStartService(&linuxUpgradePlatformOpt, testUpgradeConfig) !=
-            DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-            USER_LOG_ERROR("psdk upgrade init error");
-        }
-    #endif
-
-    #if CONFIG_MODULE_SAMPLE_HMS_CUSTOMIZATION_ON
-        returnCode = DjiTest_HmsCustomizationStartService();
-        if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-            USER_LOG_ERROR("hms test init error");
-        }
-    #endif
-
-
-    #if CONFIG_MODULE_SAMPLE_TETHERED_BATTERY_ON
-        if (aircraftInfoBaseInfo.djiAdapterType == DJI_SDK_ADAPTER_TYPE_EPORT_V2_RIBBON_CABLE) {
-            if (DjiTest_TetheredBatteryStartService() != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-                USER_LOG_ERROR("psdk tethered battery sample init error");
-            }
         }
     #endif
 
@@ -477,66 +345,12 @@ static T_DjiReturnCode DjiUser_PrepareSystemEnvironment(void)
         return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
     }
 
-    #if (CONFIG_HARDWARE_CONNECTION == DJI_USE_UART_AND_USB_BULK_DEVICE)
-        returnCode = DjiPlatform_RegHalUartHandler(&uartHandler);
-        if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-            printf("register hal uart handler error");
-            return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
-        }
-
-        returnCode = DjiPlatform_RegHalUsbBulkHandler(&usbBulkHandler);
-        if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-            printf("register hal usb bulk handler error");
-            return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
-        }
-    #elif (CONFIG_HARDWARE_CONNECTION == DJI_USE_UART_AND_NETWORK_DEVICE)
-        returnCode = DjiPlatform_RegHalUartHandler(&uartHandler);
-        if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-            printf("register hal uart handler error");
-            return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
-        }
-
-        returnCode = DjiPlatform_RegHalNetworkHandler(&networkHandler);
-        if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-            printf("register hal network handler error");
-            return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
-        }
-
-        //Attention: if you want to use camera stream view function, please uncomment it.
-        returnCode = DjiPlatform_RegSocketHandler(&socketHandler);
-        if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-            printf("register osal socket handler error");
-            return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
-        }
-
     #elif (CONFIG_HARDWARE_CONNECTION == DJI_USE_ONLY_UART)
         returnCode = DjiPlatform_RegHalUartHandler(&uartHandler);
         if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
             printf("register hal uart handler error");
             return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
         }
-
-    #elif (CONFIG_HARDWARE_CONNECTION == DJI_USE_ONLY_USB_BULK_DEVICE)
-        returnCode = DjiPlatform_RegHalUsbBulkHandler(&usbBulkHandler);
-        if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-            printf("register hal usb bulk handler error");
-            return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
-        }
-
-    #elif (CONFIG_HARDWARE_CONNECTION == DJI_USE_ONLY_NETWORK_DEVICE)
-        returnCode = DjiPlatform_RegHalNetworkHandler(&networkHandler);
-        if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-            printf("register hal network handler error");
-            return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
-        }
-
-        //Attention: if you want to use camera stream view function, please uncomment it.
-        returnCode = DjiPlatform_RegSocketHandler(&socketHandler);
-        if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-            printf("register osal socket handler error");
-            return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
-        }
-    #endif
 
     returnCode = DjiPlatform_RegFileSystemHandler(&fileSystemHandler);
     if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
