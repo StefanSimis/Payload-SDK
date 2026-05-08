@@ -1,6 +1,7 @@
 
 # local info
 dji_sdk_app_info.h
+app/
 
 #byte compiled/optimized/dll
 __pycache__/
