@@ -1,2 +1,31 @@
-samples/sample_c++/platform/linux/raspberry_pi/application/dji_sdk_app_info.h
-samples/sample_c/platform/linux/raspberry_pi/application/dji_sdk_app_info.h
+
+# local info
+dji_sdk_app_info.h
+
+#byte compiled/optimized/dll
+__pycache__/
+*.py[codz]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
