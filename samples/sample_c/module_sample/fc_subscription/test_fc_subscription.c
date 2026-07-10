@@ -233,12 +233,29 @@ T_DjiReturnCode DjiTest_FcSubscriptionRunSample(void)
                 gpsTime);
         }
 
+
+        djiStat = DjiFcSubscription_GetLatestValueOfTopic(DJI_FC_SUBSCRIPTION_TOPIC_RTK_POSITION,
+                                                          (uint8_t *) &PositionData,
+                                                          sizeof(T_DjiFcSubscriptionRtkPosition),
+                                                          &timestamp);
+        if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+            USER_LOG_ERROR("get value of topic rtk position error.");
+        } else {
+            USER_LOG_INFO(
+                "{\"rtk_lon\":%f, \"rtk_lat\":%f, \"rtk_hfsl\":%f}",
+                PositionData);
+        }
+       // dji_f64_t longitude; /*!< Longitude, unit: deg. */
+       // dji_f64_t latitude;  /*!< Latitude, unit: deg. */
+       // dji_f32_t hfsl;
+
+
         djiStat = DjiFcSubscription_GetLatestValueOfTopic(DJI_FC_SUBSCRIPTION_TOPIC_RTK_POSITION_INFO,
                                                           (uint8_t *) &rtkSolution,
                                                           sizeof(T_DjiFcSubscriptionRtkPositionInfo),
                                                           &timestamp);
         if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-            USER_LOG_ERROR("get value of topic rtk position error.");
+            USER_LOG_ERROR("get value of topic rtk_position_info error.");
         } else {
             USER_LOG_INFO(
                 "{\"rtk_solution\":%d}",

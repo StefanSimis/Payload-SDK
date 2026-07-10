@@ -29,25 +29,25 @@
 #include "../utils/util_misc.h"
 #include <dji_platform.h>
 #include <stdio.h>
-#include <waypoint_v2/test_waypoint_v2.h>
-#include <hms/test_hms.h>
-#include <gimbal_manager/test_gimbal_manager.h>
-#include <camera_manager/test_camera_manager.h>
-#include <flight_control/test_flight_control.h>
-#include <fc_subscription/test_fc_subscription.h>
-#include <dji_perception.h>
-#include "liveview/test_liveview.h"
-#include "perception/test_perception.h"
+//#include <waypoint_v2/test_waypoint_v2.h>
+//#include <hms/test_hms.h>
+//#include <gimbal_manager/test_gimbal_manager.h>
+//#include <camera_manager/test_camera_manager.h>
+//#include <flight_control/test_flight_control.h>
+//#include <fc_subscription/test_fc_subscription.h>
+//#include <dji_perception.h>
+//#include "liveview/test_liveview.h"
+//#include "perception/test_perception.h"
 #include "file_binary_array_list_en.h"
 #include <stdarg.h>
 #include "dji_aircraft_info.h"
 #include "dji_core.h"
-#include <payload_collaboration/test_payload_collaboration.h>
-#include <waypoint_v3/test_waypoint_v3.h>
+//#include <payload_collaboration/test_payload_collaboration.h>
+//#include <waypoint_v3/test_waypoint_v3.h>
 #include "dji_sdk_config.h"
-#include "hms/hms_text_c/en/hms_text_config_json.h"
-#include "dji_hms.h"
-#include "positioning/test_positioning.h"
+//#include "hms/hms_text_c/en/hms_text_config_json.h"
+//#include "dji_hms.h"
+//#include "positioning/test_positioning.h"
 
 /* Private constants ---------------------------------------------------------*/
 #define WIDGET_DIR_PATH_LEN_MAX         (256)
@@ -61,7 +61,7 @@
 
 
 /* Private types -------------------------------------------------------------*/
-typedef enum {
+/**typedef enum {
     E_DJI_SAMPLE_INDEX_FC_SUBSCRIPTION = 0,
     E_DJI_SAMPLE_INDEX_WAYPOINT_V2 = 1,
     E_DJI_SAMPLE_INDEX_WAYPOINT_V3 = 2,
@@ -94,7 +94,8 @@ typedef enum {
     E_DJI_SAMPLE_INDEX_ON_BOARD_NETWORK_RTK_STOP = 29,
     E_DJI_SAMPLE_INDEX_UNKNOWN = 0xFF,
 } E_DjiExtensionPortSampleIndex;
-
+*/
+/**
 typedef enum {
     E_DJI_HMS_ERROR_CODE_INDEX1 = 0,
     E_DJI_HMS_ERROR_CODE_INDEX2,
@@ -102,7 +103,9 @@ typedef enum {
     E_DJI_HMS_ERROR_CODE_INDEX4,
     E_DJI_HMS_ERROR_CODE_INDEX5,
 } E_DjiExtensionPortHmsErrorCodeIndex;
+*/
 
+/**
 typedef enum {
     E_DJI_HMS_ERROR_LEVEL_INDEX1 = 0,
     E_DJI_HMS_ERROR_LEVEL_INDEX2,
@@ -110,28 +113,30 @@ typedef enum {
     E_DJI_HMS_ERROR_LEVEL_INDEX4,
     E_DJI_HMS_ERROR_LEVEL_INDEX5,
 } E_DjiExtensionPortHmsErrorLevelIndex;
+*/
 
 /* Private functions declaration ---------------------------------------------*/
 static void *DjiTest_WidgetInteractionTask(void *arg);
+static void *Hyfly_WidgetInteractionTask(void *arg);
 static T_DjiReturnCode DjiTestWidget_SetWidgetValue(E_DjiWidgetType widgetType, uint32_t index, int32_t value,
                                                     void *userData);
 static T_DjiReturnCode DjiTestWidget_GetWidgetValue(E_DjiWidgetType widgetType, uint32_t index, int32_t *value,
                                                     void *userData);
-static T_DjiReturnCode DjiTestWidget_TriggerChangeAlias(void);
+//static T_DjiReturnCode DjiTestWidget_TriggerChangeAlias(void);
 
 /* Private values ------------------------------------------------------------*/
 static T_DjiTaskHandle s_widgetTestThread;
 static T_DjiTaskHandle s_widgetInteractionTestThread;
-static E_DjiExtensionPortSampleIndex s_extensionPortSampleIndex = E_DJI_SAMPLE_INDEX_FC_SUBSCRIPTION;
-static E_DjiExtensionPortHmsErrorCodeIndex s_extensionPortErrcodeIndex = E_DJI_HMS_ERROR_CODE_INDEX1;
-static E_DjiExtensionPortHmsErrorLevelIndex s_extensionPortErrLevelIndex = E_DJI_HMS_ERROR_LEVEL_INDEX1;
-static bool s_isInjectErrcode = false;
-static bool s_isEliminateErrcode = false;
-static bool s_isallowRunFlightControlSample = false;
-static bool s_isSampleStart = false;
-static E_DjiMountPosition s_mountPosition = DJI_MOUNT_POSITION_PAYLOAD_PORT_NO1;
+//static E_DjiExtensionPortSampleIndex s_extensionPortSampleIndex = E_DJI_SAMPLE_INDEX_FC_SUBSCRIPTION;
+//static E_DjiExtensionPortHmsErrorCodeIndex s_extensionPortErrcodeIndex = E_DJI_HMS_ERROR_CODE_INDEX1;
+//static E_DjiExtensionPortHmsErrorLevelIndex s_extensionPortErrLevelIndex = E_DJI_HMS_ERROR_LEVEL_INDEX1;
+//static bool s_isInjectErrcode = false;
+//static bool s_isEliminateErrcode = false;
+//static bool s_isallowRunFlightControlSample = false;
+//static bool s_isSampleStart = false;
+//static E_DjiMountPosition s_mountPosition = DJI_MOUNT_POSITION_PAYLOAD_PORT_NO1;
 static T_DjiAircraftInfoBaseInfo s_aircraftInfoBaseInfo = {0};
-static bool s_isAliasChanged = false;
+//static bool s_isAliasChanged = false;
 
 static const T_DjiWidgetHandlerListItem s_widgetHandlerList[] = {
     {0,  DJI_WIDGET_TYPE_BUTTON,        DjiTestWidget_SetWidgetValue, DjiTestWidget_GetWidgetValue, NULL},
@@ -215,9 +220,9 @@ T_DjiReturnCode DjiTest_WidgetInteractionStartService(void)
 
     //set ui config for Chinese language
     if (s_isWidgetFileDirPathConfigured == true) {
-        snprintf(tempPath, WIDGET_DIR_PATH_LEN_MAX, "%swidget_file/cn_big_screen", s_widgetFileDirPath);
+        snprintf(tempPath, WIDGET_DIR_PATH_LEN_MAX, "%swidget_file/en_big_screen", s_widgetFileDirPath);
     } else {
-        snprintf(tempPath, WIDGET_DIR_PATH_LEN_MAX, "%swidget_file/cn_big_screen", curFileDirPath);
+        snprintf(tempPath, WIDGET_DIR_PATH_LEN_MAX, "%swidget_file/en_big_screen", curFileDirPath);
     }
 
     djiStat = DjiWidget_RegUiConfigByDirPath(DJI_MOBILE_APP_LANGUAGE_CHINESE,
@@ -249,13 +254,16 @@ T_DjiReturnCode DjiTest_WidgetInteractionStartService(void)
     }
 
     //Step 4 : Run widget api sample task
+    // widget/DjiTest_WidgetTask puts a running log on the controller.
+    // without this, the option to have the log is not available.
     if (osalHandler->TaskCreate("user_widget_task", DjiTest_WidgetTask, WIDGET_TASK_STACK_SIZE, NULL,
                                 &s_widgetTestThread) != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
         USER_LOG_ERROR("Dji widget test task create error.");
         return DJI_ERROR_SYSTEM_MODULE_CODE_UNKNOWN;
     }
 
-    if (osalHandler->TaskCreate("user_widget_task", DjiTest_WidgetInteractionTask, WIDGET_TASK_STACK_SIZE, NULL,
+    // For interaction through buttons load DjiTest_WidgetInteractionTask
+    if (osalHandler->TaskCreate("user_widget_task", Hyfly_WidgetInteractionTask, WIDGET_TASK_STACK_SIZE, NULL,
                                 &s_widgetInteractionTestThread) != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
         USER_LOG_ERROR("Dji widget test task create error.");
         return DJI_ERROR_SYSTEM_MODULE_CODE_UNKNOWN;
@@ -293,12 +301,11 @@ T_DjiReturnCode DjiTest_WidgetInteractionSetConfigFilePath(const char *path)
 #pragma GCC diagnostic ignored "-Wformat"
 #endif
 
-static void *DjiTest_WidgetInteractionTask(void *arg)
+static void *Hyfly_WidgetInteractionTask(void *arg)
 {
     T_DjiOsalHandler *osalHandler = DjiPlatform_GetOsalHandler();
     T_DjiReturnCode returnCode;
     uint32_t errorCode;
-    E_DjiHmsErrorLevel errorLevel;
 
     returnCode = DjiAircraftInfo_GetBaseInfo(&s_aircraftInfoBaseInfo);
     if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
@@ -306,256 +313,6 @@ static void *DjiTest_WidgetInteractionTask(void *arg)
         return NULL;
     }
 
-    while (1) {
-        osalHandler->TaskSleepMs(100);
-
-        if (s_isInjectErrcode == true && s_isEliminateErrcode == false) {
-            switch (s_extensionPortErrcodeIndex) {
-                case E_DJI_HMS_ERROR_CODE_INDEX1:
-                    errorCode = DJI_HMS_ERROR_CODE_VALUE0;
-                    break;
-                case E_DJI_HMS_ERROR_CODE_INDEX2:
-                    errorCode = DJI_HMS_ERROR_CODE_VALUE1;
-                    break;
-                case E_DJI_HMS_ERROR_CODE_INDEX3:
-                    errorCode = DJI_HMS_ERROR_CODE_VALUE2;
-                    break;
-                case E_DJI_HMS_ERROR_CODE_INDEX4:
-                    errorCode = DJI_HMS_ERROR_CODE_VALUE3;
-                    break;
-                case E_DJI_HMS_ERROR_CODE_INDEX5:
-                    errorCode = DJI_HMS_ERROR_CODE_VALUE4;
-                    break;
-                default:
-                    break;
-            }
-            switch (s_extensionPortErrLevelIndex) {
-                case E_DJI_HMS_ERROR_LEVEL_INDEX1:
-                    errorLevel = DJI_HMS_ERROR_LEVEL_NONE;
-                    break;
-                case E_DJI_HMS_ERROR_LEVEL_INDEX2:
-                    errorLevel = DJI_HMS_ERROR_LEVEL_HINT;
-                    break;
-                case E_DJI_HMS_ERROR_LEVEL_INDEX3:
-                    errorLevel = DJI_HMS_ERROR_LEVEL_WARN;
-                    break;
-                case E_DJI_HMS_ERROR_LEVEL_INDEX4:
-                    errorLevel = DJI_HMS_ERROR_LEVEL_CRITICAL;
-                    break;
-                case E_DJI_HMS_ERROR_LEVEL_INDEX5:
-                    errorLevel = DJI_HMS_ERROR_LEVEL_FATAL;
-                    break;
-                default:
-                    break;
-            }
-            DjiHmsCustomization_InjectHmsErrorCode(errorCode, errorLevel);
-            osalHandler->TaskSleepMs(500);
-            s_isInjectErrcode = false;
-            s_isEliminateErrcode = false;
-            continue;
-        }
-        if (s_isEliminateErrcode == true && s_isInjectErrcode == false) {
-            switch (s_extensionPortErrcodeIndex) {
-                case E_DJI_HMS_ERROR_CODE_INDEX1:
-                    errorCode = DJI_HMS_ERROR_CODE_VALUE0;
-                    break;
-                case E_DJI_HMS_ERROR_CODE_INDEX2:
-                    errorCode = DJI_HMS_ERROR_CODE_VALUE1;
-                    break;
-                case E_DJI_HMS_ERROR_CODE_INDEX3:
-                    errorCode = DJI_HMS_ERROR_CODE_VALUE2;
-                    break;
-                case E_DJI_HMS_ERROR_CODE_INDEX4:
-                    errorCode = DJI_HMS_ERROR_CODE_VALUE3;
-                    break;
-                case E_DJI_HMS_ERROR_CODE_INDEX5:
-                    errorCode = DJI_HMS_ERROR_CODE_VALUE4;
-                    break;
-                default:
-                    break;
-            }
-            DjiHmsCustomization_EliminateHmsErrorCode(errorCode);
-            osalHandler->TaskSleepMs(500);
-            s_isInjectErrcode = false;
-            s_isEliminateErrcode = false;
-            continue;
-        }
-
-        if (s_isSampleStart != true) {
-            continue;
-        }
-
-        osalHandler->TaskSleepMs(500);
-
-        s_isSampleStart = false;
-        printf("\r\n");
-        USER_LOG_INFO("--------------------------------------------------------------------------------------------->");
-        DjiTest_WidgetLogAppend("-> Sample Start");
-
-        if (s_aircraftInfoBaseInfo.mountPositionType == DJI_MOUNT_POSITION_TYPE_EXTENSION_PORT ||
-            s_aircraftInfoBaseInfo.mountPositionType == DJI_MOUNT_POSITION_TYPE_EXTENSION_LITE_PORT ||
-            s_aircraftInfoBaseInfo.mountPositionType == DJI_MOUNT_POSITION_TYPE_MANIFOLD3_ONBOARD ||
-            s_aircraftInfoBaseInfo.mountPositionType == DJI_MOUNT_POSITION_TYPE_EXTENSION_PORT_V2) {
-            switch (s_extensionPortSampleIndex) {
-                case E_DJI_SAMPLE_INDEX_WAYPOINT_V2:
-                    if (s_isallowRunFlightControlSample == true) {
-                        DjiTest_WaypointV2RunSample();
-                    } else {
-                        DjiTest_WidgetLogAppend("turn on 'unlock flight control restrictions!!'");
-                        USER_LOG_WARN("Please turn on the 'unlock flight control restrictions' switch.");
-                    }
-                    break;
-                case E_DJI_SAMPLE_INDEX_WAYPOINT_V3:
-                    if (s_isallowRunFlightControlSample == true) {
-                        DjiTest_WaypointV3RunSample();
-                    } else {
-                        DjiTest_WidgetLogAppend("turn on 'unlock flight control restrictions!!'");
-                        USER_LOG_WARN("Please turn on the 'unlock flight control restrictions' switch.");
-                    }
-                    break;
-                case E_DJI_SAMPLE_INDEX_FLIGHT_CONTROL_TAKE_OFF_LANDING:
-                    if (s_isallowRunFlightControlSample == true) {
-                        DjiTest_FlightControlRunSample(E_DJI_TEST_FLIGHT_CTRL_SAMPLE_SELECT_TAKE_OFF_LANDING);
-                    } else {
-                        DjiTest_WidgetLogAppend("should turn on 'unlock flight control restrictions.");
-                        USER_LOG_WARN("Please turn on the 'unlock flight control restrictions' switch.");
-                    }
-                    break;
-                case E_DJI_SAMPLE_INDEX_FLIGHT_CONTROL_TAKE_OFF_POSITION_CTRL_LANDING:
-                    if (s_isallowRunFlightControlSample == true) {
-                        DjiTest_FlightControlRunSample(
-                            E_DJI_TEST_FLIGHT_CTRL_SAMPLE_SELECT_TAKE_OFF_POSITION_CTRL_LANDING);
-                    } else {
-                        DjiTest_WidgetLogAppend("should turn on 'unlock flight control restrictions..");
-                        USER_LOG_WARN("Please turn on the 'unlock flight control restrictions' switch.");
-                    }
-                    break;
-                case E_DJI_SAMPLE_INDEX_FLIGHT_CONTROL_TAKE_OFF_GO_HOME_FORCE_LANDING:
-                    if (s_isallowRunFlightControlSample == true) {
-                        DjiTest_FlightControlRunSample(
-                            E_DJI_TEST_FLIGHT_CTRL_SAMPLE_SELECT_TAKE_OFF_GO_HOME_FORCE_LANDING);
-                    } else {
-                        DjiTest_WidgetLogAppend("should turn on 'unlock flight control restrictions.");
-                        USER_LOG_WARN("Please turn on the 'unlock flight control restrictions' switch.");
-                    }
-                    break;
-                case E_DJI_SAMPLE_INDEX_FLIGHT_CONTROL_TAKE_OFF_VELOCITY_CTRL_LANDING:
-                    if (s_isallowRunFlightControlSample == true) {
-                        DjiTest_FlightControlRunSample(
-                            E_DJI_TEST_FLIGHT_CTRL_SAMPLE_SELECT_TAKE_OFF_VELOCITY_CTRL_LANDING);
-                    } else {
-                        DjiTest_WidgetLogAppend("should turn on 'unlock flight control restrictions.");
-                        USER_LOG_WARN("Please turn on the 'unlock flight control restrictions' switch.");
-                    }
-                    break;
-                case E_DJI_SAMPLE_INDEX_FLIGHT_CONTROL_ARREST_FLYING:
-                    if (s_isallowRunFlightControlSample == true) {
-                        DjiTest_FlightControlRunSample(E_DJI_TEST_FLIGHT_CTRL_SAMPLE_SELECT_ARREST_FLYING);
-                    } else {
-                        DjiTest_WidgetLogAppend("should turn on 'unlock flight control restrictions.");
-                        USER_LOG_WARN("Please turn on the 'unlock flight control restrictions' switch.");
-                    }
-                    break;
-                case E_DJI_SAMPLE_INDEX_FLIGHT_CONTROL_SET_GET_PARAM:
-                    DjiTest_FlightControlRunSample(E_DJI_TEST_FLIGHT_CTRL_SAMPLE_SELECT_SET_GET_PARAM);
-                    break;
-                case E_DJI_SAMPLE_INDEX_FC_SUBSCRIPTION:
-                    DjiTest_FcSubscriptionRunSample();
-                    break;
-                case E_DJI_SAMPLE_INDEX_GIMBAL_MANAGER_FREE_MODE:
-                    DjiTest_GimbalManagerRunSample(s_mountPosition, DJI_GIMBAL_MODE_FREE);
-                    break;
-                case E_DJI_SAMPLE_INDEX_GIMBAL_MANAGER_YAW_FOLLOW_MODE:
-                    DjiTest_GimbalManagerRunSample(s_mountPosition, DJI_GIMBAL_MODE_YAW_FOLLOW);
-                    break;
-                case E_DJI_SAMPLE_INDEX_HMS_MANAGER:
-                    DjiTest_HmsManagerRunSample(DJI_MOBILE_APP_LANGUAGE_ENGLISH);
-                    break;
-                case E_DJI_SAMPLE_INDEX_LIVEVIEW:
-#ifdef SYSTEM_ARCH_LINUX
-                    DjiTest_LiveviewRunSample(s_mountPosition);
-#else
-                    USER_LOG_WARN("This feature does not support RTOS platform.");
-#endif
-                    break;
-                case E_DJI_SAMPLE_INDEX_PERCEPTION:
-#ifdef SYSTEM_ARCH_LINUX
-                    DjiTest_PerceptionRunSample(DJI_PERCEPTION_RECTIFY_FRONT);
-#else
-                    USER_LOG_WARN("This feature does not support RTOS platform.");
-#endif
-                    break;
-                case E_DJI_SAMPLE_INDEX_SWITCH_ALIAS:
-                    DjiTestWidget_TriggerChangeAlias();
-                    break;
-                case E_DJI_SAMPLE_INDEX_CAMMGR_SHUTTER_SPEED:
-                    DjiTest_CameraManagerRunSample(s_mountPosition,
-                                                   E_DJI_TEST_CAMERA_MANAGER_SAMPLE_SELECT_SET_CAMERA_SHUTTER_SPEED);
-                    break;
-                case E_DJI_SAMPLE_INDEX_CAMMGR_APERTURE:
-                    DjiTest_CameraManagerRunSample(s_mountPosition,
-                                                   E_DJI_TEST_CAMERA_MANAGER_SAMPLE_SELECT_SET_CAMERA_APERTURE);
-                    break;
-                case E_DJI_SAMPLE_INDEX_CAMMGR_EV:
-                    DjiTest_CameraManagerRunSample(s_mountPosition,
-                                                   E_DJI_TEST_CAMERA_MANAGER_SAMPLE_SELECT_SET_CAMERA_EV);
-                    break;
-                case E_DJI_SAMPLE_INDEX_CAMMGR_ISO:
-                    DjiTest_CameraManagerRunSample(s_mountPosition,
-                                                   E_DJI_TEST_CAMERA_MANAGER_SAMPLE_SELECT_SET_CAMERA_ISO);
-                    break;
-                case E_DJI_SAMPLE_INDEX_CAMMGR_FOCUS_POINT:
-                    DjiTest_CameraManagerRunSample(s_mountPosition,
-                                                   E_DJI_TEST_CAMERA_MANAGER_SAMPLE_SELECT_SET_CAMERA_FOCUS_POINT);
-                    break;
-                case E_DJI_SAMPLE_INDEX_CAMMGR_TAP_ZOOM:
-                    DjiTest_CameraManagerRunSample(s_mountPosition,
-                                                   E_DJI_TEST_CAMERA_MANAGER_SAMPLE_SELECT_SET_CAMERA_TAP_ZOOM_POINT);
-                    break;
-                case E_DJI_SAMPLE_INDEX_CAMMGR_OPTICAL_ZOOM:
-                    DjiTest_CameraManagerRunSample(s_mountPosition,
-                                                   E_DJI_TEST_CAMERA_MANAGER_SAMPLE_SELECT_SET_CAMERA_ZOOM_PARAM);
-                    break;
-                case E_DJI_SAMPLE_INDEX_CAMMGR_SINGLE_PHOTO:
-                    DjiTest_CameraManagerRunSample(s_mountPosition,
-                                                   E_DJI_TEST_CAMERA_MANAGER_SAMPLE_SELECT_SHOOT_SINGLE_PHOTO);
-                    break;
-                case E_DJI_SAMPLE_INDEX_CAMMGR_BURST_PHOTO:
-                    DjiTest_CameraManagerRunSample(s_mountPosition,
-                                                   E_DJI_TEST_CAMERA_MANAGER_SAMPLE_SELECT_SHOOT_BURST_PHOTO);
-                    break;
-                case E_DJI_SAMPLE_INDEX_CAMMGR_INTERVAL_PHOTO:
-                    DjiTest_CameraManagerRunSample(s_mountPosition,
-                                                   E_DJI_TEST_CAMERA_MANAGER_SAMPLE_SELECT_SHOOT_INTERVAL_PHOTO);
-                    break;
-                case E_DJI_SAMPLE_INDEX_CAMMGR_RECORDER_VIDEO:
-                    DjiTest_CameraManagerRunSample(s_mountPosition,
-                                                   E_DJI_TEST_CAMERA_MANAGER_SAMPLE_SELECT_RECORD_VIDEO);
-                    break;
-                case E_DJI_SAMPLE_INDEX_CAMMGR_MEDIA_DOWNLOAD:
-                    DjiTest_CameraManagerRunSample(s_mountPosition,
-                                                   E_DJI_TEST_CAMERA_MANAGER_SAMPLE_SELECT_DOWNLOAD_AND_DELETE_MEDIA_FILE);
-                    break;
-                case E_DJI_SAMPLE_INDEX_CAMMGR_THERMOMETRY:
-                    DjiTest_CameraManagerRunSample(s_mountPosition,
-                                                   E_DJI_TEST_CAMERA_MANAGER_SAMPLE_SELECT_THERMOMETRY);
-                    break;
-                case E_DJI_SAMPLE_INDEX_ON_BOARD_NETWORK_RTK_START:
-                    DjiTest_NetworkRtkOnBoardService(DJI_TEST_NETWORK_RTK_START);
-                    break;
-                case E_DJI_SAMPLE_INDEX_ON_BOARD_NETWORK_RTK_STOP:
-                    DjiTest_NetworkRtkOnBoardService(DJI_TEST_NETWORK_RTK_STOP);
-                    break;
-                default:
-                    break;
-            }
-        } else {
-            USER_LOG_WARN("Can't support on payload port.");
-        }
-
-        USER_LOG_INFO("--------------------------------------------------------------------------------------------->");
-        DjiTest_WidgetLogAppend("-> Sample End");
-    }
 }
 
 #ifndef __CC_ARM
@@ -573,46 +330,6 @@ static T_DjiReturnCode DjiTestWidget_SetWidgetValue(E_DjiWidgetType widgetType, 
                   s_widgetTypeNameArray[widgetType], index, value);
     s_widgetValueList[index] = value;
 
-    if (widgetType == DJI_WIDGET_TYPE_SWITCH && index == 7) {
-        s_isallowRunFlightControlSample = value;
-    }
-
-    if (widgetType == DJI_WIDGET_TYPE_LIST && index == 8) {
-        s_mountPosition = value + 1;
-    }
-
-    if (widgetType == DJI_WIDGET_TYPE_LIST && index == 9) {
-        s_extensionPortSampleIndex = value;
-    }
-
-    if (widgetType == DJI_WIDGET_TYPE_BUTTON && index == 10) {
-        if (value == 1) {
-            s_isSampleStart = true;
-        }
-    }
-
-    if (widgetType == DJI_WIDGET_TYPE_LIST && index == 11) {
-        s_extensionPortErrcodeIndex = value;
-    }
-
-    if (widgetType == DJI_WIDGET_TYPE_LIST && index == 12) {
-        s_extensionPortErrLevelIndex = value;
-    }
-
-    if (widgetType == DJI_WIDGET_TYPE_BUTTON && index == 13) {
-        if (value == 1) {
-            s_isInjectErrcode = true;
-            s_isEliminateErrcode = false;
-        }
-    }
-
-    if (widgetType == DJI_WIDGET_TYPE_BUTTON && index == 14) {
-        if (value == 1) {
-            s_isInjectErrcode = false;
-            s_isEliminateErrcode = true;
-        }
-    }
-
     return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
 }
 
@@ -627,6 +344,7 @@ static T_DjiReturnCode DjiTestWidget_GetWidgetValue(E_DjiWidgetType widgetType, 
     return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
 }
 
+/**
 static T_DjiReturnCode DjiTestWidget_TriggerChangeAlias(void)
 {
     USER_LOG_INFO("Payload alias sample start");
@@ -645,5 +363,5 @@ static T_DjiReturnCode DjiTestWidget_TriggerChangeAlias(void)
 
     return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
 }
-
+*/
 /****************** (C) COPYRIGHT DJI Innovations *****END OF FILE****/
