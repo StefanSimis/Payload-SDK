@@ -28,7 +28,7 @@
 #define TEST_FLIGHT_CONTROLLER_ENTRY_H
 
 /* Includes ------------------------------------------------------------------*/
-#include <gimbal_manager/test_gimbal_manager.h>
+//#include <gimbal_manager/test_gimbal_manager.h>
 
 #ifdef __cplusplus
 extern "C" {

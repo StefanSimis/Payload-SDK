@@ -23,12 +23,14 @@
  */
 
 /* Includes ------------------------------------------------------------------*/
-#include <liveview/test_liveview_entry.hpp>
+//#include <liveview/test_liveview_entry.hpp>
 #include "application.hpp"
 #include "fc_subscription/test_fc_subscription.h"
 #include <dji_logger.h>
-#include <flight_controller/test_flight_controller_entry.h>
-#include <positioning/test_positioning.h>
+//#include <flight_controller/test_flight_controller_entry.h>
+//#include "positioning/test_positioning.h"
+#include "widget_interaction_test/test_widget_interaction.h"
+#include "widget/test_widget.h"
 /* Private constants ---------------------------------------------------------*/
 
 /* Private types -------------------------------------------------------------*/
@@ -45,21 +47,22 @@ int main(int argc, char **argv)
     T_DjiOsalHandler *osalHandler = DjiPlatform_GetOsalHandler();
     T_DjiReturnCode returnCode;
 
-    USER_LOG_INFO("Start RTK Positioning cycle");
+    // DjiTest_WidgetMannagerStart();
+    //returnCode = DjiTest_WidgetInteractionStartService();
+    //if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+    //   USER_LOG_ERROR("widget sample init error");
+    //}
+
+
+    /* USER_LOG_INFO("Start RTK Positioning cycle");
     returnCode = DjiTest_PositioningStartService();
     if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
         USER_LOG_ERROR("rtk positioning sample init error");
-    }
+    }*/
 
-    osalHandler->TaskSleepMs(3000);
-
-start:
     //fc subscription
     USER_LOG_INFO("Start FcSubscription cycle");
     DjiTest_FcSubscriptionRunSample();
-
-    osalHandler->TaskSleepMs(100);
-    goto start;
 }
 
 /* Private functions definition-----------------------------------------------*/

@@ -569,7 +569,7 @@ static T_DjiReturnCode DjiTestWidget_SetWidgetValue(E_DjiWidgetType widgetType, 
 
     DjiTest_WidgetLogAppend("SetWidget type:%s index:%d value:%d",
                             s_widgetTypeNameArray[widgetType], index, value);
-    USER_LOG_INFO("Set widget value, widgetType = %s, widgetIndex = %d ,widgetValue = %d",
+    USER_LOG_INFO("{\"widgetType\":\"%s\",\"widgetIndex\":%d,\"widgetValue\":%d}",
                   s_widgetTypeNameArray[widgetType], index, value);
     s_widgetValueList[index] = value;
 

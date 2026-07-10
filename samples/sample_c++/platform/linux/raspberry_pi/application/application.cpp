@@ -40,13 +40,13 @@
 #include "../hal/hal_network.h"
 #include "../hal/hal_i2c.h"
 
-#include <gimbal_emu/test_payload_gimbal_emu.h>
-#include <camera_emu/test_payload_cam_emu_media.h>
-#include <camera_emu/test_payload_cam_emu_base.h>
-#include "widget/test_widget.h"
-#include "widget/test_widget_speaker.h"
-#include <power_management/test_power_management.h>
-#include "data_transmission/test_data_transmission.h"
+//#include <gimbal_emu/test_payload_gimbal_emu.h>
+//#include <camera_emu/test_payload_cam_emu_media.h>
+//#include <camera_emu/test_payload_cam_emu_base.h>
+#include "widget_interaction_test/test_widget_interaction.h"
+//#include "widget/test_widget_speaker.h"
+//#include <power_management/test_power_management.h>
+//#include "data_transmission/test_data_transmission.h"
 
 /* Private constants ---------------------------------------------------------*/
 #define DJI_LOG_PATH                    "Logs/DJI"
@@ -69,8 +69,8 @@ static FILE *s_djiLogFileCnt;
 
 /* Private functions declaration ---------------------------------------------*/
 static void DjiUser_NormalExitHandler(int signalNum);
-static T_DjiReturnCode DjiTest_HighPowerApplyPinInit();
-static T_DjiReturnCode DjiTest_WriteHighPowerApplyPin(E_DjiPowerManagementPinState pinState);
+//static T_DjiReturnCode DjiTest_HighPowerApplyPinInit();
+//static T_DjiReturnCode DjiTest_WriteHighPowerApplyPin(E_DjiPowerManagementPinState pinState);
 
 /* Exported functions definition ---------------------------------------------*/
 Application::Application(int argc, char **argv)
@@ -188,7 +188,6 @@ void Application::DjiUser_SetupEnvironment()
         throw std::runtime_error("Register hal uart handler error.");
     }
 
-    //Attention: if you want to use camera stream view function, please uncomment it.
     returnCode = DjiPlatform_RegSocketHandler(&socketHandler);
     if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
         throw std::runtime_error("register osal socket handler error");
@@ -239,7 +238,7 @@ void Application::DjiUser_ApplicationStart()
         throw std::runtime_error("Set firmware version error.");
     }
 
-    returnCode = DjiCore_SetSerialNumber("PML-HF002");
+    returnCode = DjiCore_SetSerialNumber("PML-Hy-Fly");
     if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
         throw std::runtime_error("Set serial number error");
     }
@@ -266,12 +265,15 @@ void Application::DjiUser_ApplicationStart()
         throw std::runtime_error("Set alias error.");
     }
 
-#ifdef CONFIG_MODULE_SAMPLE_WIDGET_ON
-        returnCode = DjiTest_WidgetStartService();
-        if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-            USER_LOG_ERROR("widget sample init error");
-        }
-#endif
+    //returnCode = DjiTest_WidgetStartService();
+    //if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+    //    USER_LOG_ERROR("widget sample init error");
+    // }
+
+    returnCode = DjiTest_WidgetInteractionStartService();
+    if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+        USER_LOG_ERROR("widget sample init error");
+    }
 
     returnCode = DjiCore_ApplicationStart();
     if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
@@ -442,10 +444,10 @@ static T_DjiReturnCode DjiTest_HighPowerApplyPinInit()
     return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
 }
 
-static T_DjiReturnCode DjiTest_WriteHighPowerApplyPin(E_DjiPowerManagementPinState pinState)
+/*static T_DjiReturnCode DjiTest_WriteHighPowerApplyPin(E_DjiPowerManagementPinState pinState)
 {
     //attention: please pull up the HWPR pin state by hardware.
     return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
 }
-
+/
 /****************** (C) COPYRIGHT DJI Innovations *****END OF FILE****/

@@ -50,7 +50,7 @@ extern "C" {
 
 #define CONFIG_MODULE_SAMPLE_GIMBAL_EMU_ON              false
 
-#define CONFIG_MODULE_SAMPLE_WIDGET_ON                  false
+#define CONFIG_MODULE_SAMPLE_WIDGET_ON                  true
 
 #define CONFIG_MODULE_SAMPLE_WIDGET_SPEAKER_ON          false
 

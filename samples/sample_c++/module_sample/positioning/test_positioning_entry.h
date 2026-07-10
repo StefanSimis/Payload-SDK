@@ -35,6 +35,7 @@
 
 /* Exported functions --------------------------------------------------------*/
 T_DjiReturnCode DjiTest_RunOnboardRTKSample(void);
+DjiUser_PrintPositioningInfo(void);
 
 #endif // TEST_FLIGHT_CONTROLLER_ENTRY_H
 /************************ (C) COPYRIGHT DJI Innovations *******END OF FILE******/
