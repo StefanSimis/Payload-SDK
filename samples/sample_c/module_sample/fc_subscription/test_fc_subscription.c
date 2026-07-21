@@ -62,6 +62,9 @@ T_DjiReturnCode DjiTest_FcSubscriptionRunSample(void)
     T_DjiFcSubscriptionRtkPositionInfo rtkSolution = {0};
     T_DjiFcSubscriptionRTKConnectStatus RTKConnectStatus = {0};
     T_DjiFcSubscriptionAltitudeOfHomePoint AltHomepoint = {0};
+    T_DjiFcSubscriptionCompass Mag = {0};
+    T_DjiFcSubscriptionPositionFused PositionFused = {0};
+    T_DjiFcSubscriptionAltitudeFused AltitudeFused = {0};
 
     s_userFcSubscriptionDataShow = true;
 
@@ -117,6 +120,17 @@ T_DjiReturnCode DjiTest_FcSubscriptionRunSample(void)
         USER_LOG_INFO("Subscribe topic gpsdata success.");
     }
 
+    /**
+    djiStat = DjiFcSubscription_SubscribeTopic(DJI_FC_SUBSCRIPTION_TOPIC_RTK_CONNECT_STATUS, DJI_DATA_SUBSCRIPTION_TOPIC_1_HZ,
+                                               NULL);
+    if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+        USER_LOG_ERROR("Subscribe topic rtk connect status error.");
+        return DJI_ERROR_SYSTEM_MODULE_CODE_UNKNOWN;
+    } else {
+        USER_LOG_INFO("Subscribe topic rtk_connect_status success.");
+    }
+    */
+
     djiStat = DjiFcSubscription_SubscribeTopic(DJI_FC_SUBSCRIPTION_TOPIC_RTK_POSITION, DJI_DATA_SUBSCRIPTION_TOPIC_1_HZ,
                                                NULL);
     if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
@@ -135,6 +149,27 @@ T_DjiReturnCode DjiTest_FcSubscriptionRunSample(void)
         USER_LOG_INFO("Subscribe topic rtk_position_info success.");
     }
 
+    /**
+    djiStat = DjiFcSubscription_SubscribeTopic(DJI_FC_SUBSCRIPTION_TOPIC_POSITION_FUSED, DJI_DATA_SUBSCRIPTION_TOPIC_1_HZ,
+                                               NULL);
+    if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+        USER_LOG_ERROR("Subscribe topic position_fused error.");
+        return DJI_ERROR_SYSTEM_MODULE_CODE_UNKNOWN;
+    } else {
+        USER_LOG_INFO("Subscribe topic position_fused success.");
+    }
+
+    djiStat = DjiFcSubscription_SubscribeTopic(DJI_FC_SUBSCRIPTION_TOPIC_ALTITUDE_FUSED, DJI_DATA_SUBSCRIPTION_TOPIC_1_HZ,
+                                               NULL);
+    if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+        USER_LOG_ERROR("Subscribe topic altitude_fused error.");
+        return DJI_ERROR_SYSTEM_MODULE_CODE_UNKNOWN;
+    } else {
+        USER_LOG_INFO("Subscribe topic altitude_fused success.");
+    }
+    */
+
+    /**
     djiStat = DjiFcSubscription_SubscribeTopic(DJI_FC_SUBSCRIPTION_TOPIC_RTK_CONNECT_STATUS, DJI_DATA_SUBSCRIPTION_TOPIC_1_HZ,
                                                NULL);
     if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
@@ -143,6 +178,7 @@ T_DjiReturnCode DjiTest_FcSubscriptionRunSample(void)
     } else {
         USER_LOG_DEBUG("Subscribe topic rtk_connect_status success.");
     }
+    */
 
     djiStat = DjiFcSubscription_SubscribeTopic(DJI_FC_SUBSCRIPTION_TOPIC_ALTITUDE_OF_HOMEPOINT, DJI_DATA_SUBSCRIPTION_TOPIC_1_HZ,
                                                NULL);
@@ -153,9 +189,43 @@ T_DjiReturnCode DjiTest_FcSubscriptionRunSample(void)
         USER_LOG_DEBUG("Subscribe topic altitude_homepoint success.");
     }
 
+    djiStat = DjiFcSubscription_SubscribeTopic(DJI_FC_SUBSCRIPTION_TOPIC_COMPASS, DJI_DATA_SUBSCRIPTION_TOPIC_1_HZ,
+                                               NULL);
+    if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+        USER_LOG_ERROR("Subscribe topic compass error.");
+        return DJI_ERROR_SYSTEM_MODULE_CODE_UNKNOWN;
+    } else {
+        USER_LOG_DEBUG("Subscribe topic compass success.");
+    }
+
 
     while (1) {
         osalHandler->TaskSleepMs(1000 / FC_SUBSCRIPTION_TASK_FREQ);
+
+        djiStat = DjiFcSubscription_GetLatestValueOfTopic(DJI_FC_SUBSCRIPTION_TOPIC_ALTITUDE_OF_HOMEPOINT,
+                                                         (uint8_t *) &AltHomepoint,
+                                                          sizeof(T_DjiFcSubscriptionAltitudeOfHomePoint),
+                                                          &timestamp);
+        if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+            USER_LOG_ERROR("get value of topic altitude_homepoint error.");
+        } else {
+            USER_LOG_INFO(
+                "{\"home_altitude\":%f}",
+                AltHomepoint);
+        }
+
+        djiStat = DjiFcSubscription_GetLatestValueOfTopic(DJI_FC_SUBSCRIPTION_TOPIC_COMPASS,
+                                                          (uint8_t *) &Mag,
+                                                          sizeof(T_DjiFcSubscriptionCompass),
+                                                          &timestamp);
+        if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+            USER_LOG_ERROR("get value of compass error.");
+         } else {
+            USER_LOG_INFO(
+                "{\"compass_x\":%d, \"compass_y\":%d, \"compass_z\":%d}",
+                Mag.x, Mag.y, Mag.z);
+        }
+
         djiStat = DjiFcSubscription_GetLatestValueOfTopic(DJI_FC_SUBSCRIPTION_TOPIC_VELOCITY,
                                                           (uint8_t *) &velocity,
                                                           sizeof(T_DjiFcSubscriptionVelocity),
@@ -164,10 +234,71 @@ T_DjiReturnCode DjiTest_FcSubscriptionRunSample(void)
             USER_LOG_ERROR("get value of topic velocity error.");
         } else {
             USER_LOG_INFO(
-                "{\"velocity_x\":%f,\"velocity_y\":%f,\"velocity_z\":%f,\"healthFlag\":%d,\"timestamp_ms\":%d,\"timestamp_us\":%d}",
+                "{\"velocity_x\":%f,\"velocity_y\":%f,\"velocity_z\":%f,\"healthFlag\":%d,\"timestamp_ms\":%u,\"timestamp_us\":%u}",
                 velocity.data.x,
                 velocity.data.y,
                 velocity.data.z, velocity.health, timestamp.millisecond, timestamp.microsecond);
+        }
+
+        /**
+        djiStat = DjiFcSubscription_GetLatestValueOfTopic(DJI_FC_SUBSCRIPTION_TOPIC_RTK_CONNECT_STATUS,
+                                                          (uint8_t *) &RTKConnectStatus,
+                                                          sizeof(T_DjiFcSubscriptionRTKConnectStatus),
+                                                          &timestamp);
+        if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+            USER_LOG_ERROR("get value of topic rtk connect status error.");
+        } else {
+            USER_LOG_INFO(
+                "{\"rtk_connection\":%hu}",
+                RTKConnectStatus.rtkConnected);
+        }
+        */
+
+        djiStat = DjiFcSubscription_GetLatestValueOfTopic(DJI_FC_SUBSCRIPTION_TOPIC_GPS_DATE,
+                                                          (uint8_t *) &gpsData,
+                                                          sizeof(T_DjiFcSubscriptionGpsDate),
+                                                          &timestamp);
+        if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+            USER_LOG_ERROR("get value of topic gps date error.");
+         } else {
+            USER_LOG_INFO(
+                "{\"gps_date\":%d}",
+                gpsData);
+        }
+
+        djiStat = DjiFcSubscription_GetLatestValueOfTopic(DJI_FC_SUBSCRIPTION_TOPIC_GPS_TIME,
+                                                          (uint8_t *) &gpsTime,
+                                                          sizeof(T_DjiFcSubscriptionGpsTime),
+                                                          &timestamp);
+        if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+            USER_LOG_ERROR("get value of topic gps times error.");
+        } else {
+            USER_LOG_INFO(
+                "{\"gps_time\":%d}",
+                gpsTime);
+        }
+
+        djiStat = DjiFcSubscription_GetLatestValueOfTopic(DJI_FC_SUBSCRIPTION_TOPIC_GPS_DETAILS,
+                                                          (uint8_t *) &GpsDetail,
+                                                          sizeof(T_DjiFcSubscriptionGpsDetails),
+                                                          &timestamp);
+        if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+            USER_LOG_ERROR("get value of topic gps details error.");
+        } else {
+            USER_LOG_INFO("{\"gps_fix\":%.0f,\"nsat\":%d}",
+            GpsDetail.fixState, GpsDetail.totalSatelliteNumberUsed);
+        }
+
+        djiStat = DjiFcSubscription_GetLatestValueOfTopic(DJI_FC_SUBSCRIPTION_TOPIC_RTK_POSITION_INFO,
+                                                          (uint8_t *) &rtkSolution,
+                                                          sizeof(T_DjiFcSubscriptionRtkPositionInfo),
+                                                          &timestamp);
+        if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+            USER_LOG_ERROR("get value of topic rtk_position_info error.");
+        } else {
+            USER_LOG_INFO(
+                "{\"rtk_solution\":%d}",
+                rtkSolution);
         }
 
         djiStat = DjiFcSubscription_GetLatestValueOfTopic(DJI_FC_SUBSCRIPTION_TOPIC_GPS_POSITION,
@@ -182,17 +313,44 @@ T_DjiReturnCode DjiTest_FcSubscriptionRunSample(void)
                 gpsPosition.x,gpsPosition.y,gpsPosition.z);
         }
 
-        djiStat = DjiFcSubscription_GetLatestValueOfTopic(DJI_FC_SUBSCRIPTION_TOPIC_GPS_DETAILS,
-                                                          (uint8_t *) &GpsDetail,
-                                                          sizeof(T_DjiFcSubscriptionGpsDetails),
+        djiStat = DjiFcSubscription_GetLatestValueOfTopic(DJI_FC_SUBSCRIPTION_TOPIC_RTK_POSITION,
+                                                          (uint8_t *) &PositionData,
+                                                          sizeof(T_DjiFcSubscriptionRtkPosition),
                                                           &timestamp);
         if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-            USER_LOG_ERROR("get value of topic gps details error.");
+            USER_LOG_ERROR("get value of topic rtk position error.");
         } else {
-            USER_LOG_INFO("{\"gps_fix\":%.0f,\"nsat\":%d}",
-            GpsDetail.fixState, GpsDetail.totalSatelliteNumberUsed);
+            USER_LOG_INFO(
+                "{\"rtk_lon\":%lf, \"rtk_lat\":%lf, \"rtk_hfsl\":%f}",
+                PositionData.latitude, PositionData.longitude, PositionData.hfsl);
         }
 
+        /**
+        djiStat = DjiFcSubscription_GetLatestValueOfTopic(DJI_FC_SUBSCRIPTION_TOPIC_POSITION_FUSED,
+                                                          (uint8_t *) &PositionFused,
+                                                          sizeof(T_DjiFcSubscriptionPositionFused),
+                                                          &timestamp);
+        if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+            USER_LOG_ERROR("get value of topic position_fused error.");
+        } else {
+            USER_LOG_INFO(
+                "{\"fused_lon\":%lf, \"fused_lat\":%lf, \"fused_alt\":%f, \"nsat\":%d}",
+                PositionFused.latitude, PositionFused.longitude, PositionFused.altitude);
+        }
+
+        djiStat = DjiFcSubscription_GetLatestValueOfTopic(DJI_FC_SUBSCRIPTION_TOPIC_ALTITUDE_FUSED,
+                                                          (uint8_t *) &AltitudeFused,
+                                                          sizeof(T_DjiFcSubscriptionAltitudeFused),
+                                                          &timestamp);
+        if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+            USER_LOG_ERROR("get value of topic altitude_fused error.");
+        } else {
+            USER_LOG_INFO(
+                "{\"altitude_fused\":%f}", AltitudeFused);
+        }
+        */
+
+        /**
         djiStat = DjiFcSubscription_GetLatestValueOfTopic(DJI_FC_SUBSCRIPTION_TOPIC_BATTERY_SINGLE_INFO_INDEX1,
                                                           (uint8_t *) &singleBatteryInfo,
                                                           sizeof(T_DjiFcSubscriptionSingleBatteryInfo),
@@ -220,83 +378,8 @@ T_DjiReturnCode DjiTest_FcSubscriptionRunSample(void)
                 singleBatteryInfo.currentVoltage / 1000,
                 (dji_f32_t) singleBatteryInfo.batteryTemperature / 10);
         }
+        */
 
-        djiStat = DjiFcSubscription_GetLatestValueOfTopic(DJI_FC_SUBSCRIPTION_TOPIC_GPS_TIME,
-                                                          (uint8_t *) &gpsTime,
-                                                          sizeof(T_DjiFcSubscriptionGpsTime),
-                                                          &timestamp);
-        if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-            USER_LOG_ERROR("get value of topic gps times error.");
-        } else {
-            USER_LOG_INFO(
-                "{\"gps_time\":%d}",
-                gpsTime);
-        }
-
-
-        djiStat = DjiFcSubscription_GetLatestValueOfTopic(DJI_FC_SUBSCRIPTION_TOPIC_RTK_POSITION,
-                                                          (uint8_t *) &PositionData,
-                                                          sizeof(T_DjiFcSubscriptionRtkPosition),
-                                                          &timestamp);
-        if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-            USER_LOG_ERROR("get value of topic rtk position error.");
-        } else {
-            USER_LOG_INFO(
-                "{\"rtk_lon\":%f, \"rtk_lat\":%f, \"rtk_hfsl\":%f}",
-                PositionData);
-        }
-       // dji_f64_t longitude; /*!< Longitude, unit: deg. */
-       // dji_f64_t latitude;  /*!< Latitude, unit: deg. */
-       // dji_f32_t hfsl;
-
-
-        djiStat = DjiFcSubscription_GetLatestValueOfTopic(DJI_FC_SUBSCRIPTION_TOPIC_RTK_POSITION_INFO,
-                                                          (uint8_t *) &rtkSolution,
-                                                          sizeof(T_DjiFcSubscriptionRtkPositionInfo),
-                                                          &timestamp);
-        if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-            USER_LOG_ERROR("get value of topic rtk_position_info error.");
-        } else {
-            USER_LOG_INFO(
-                "{\"rtk_solution\":%d}",
-                rtkSolution);
-        }
-
-        djiStat = DjiFcSubscription_GetLatestValueOfTopic(DJI_FC_SUBSCRIPTION_TOPIC_ALTITUDE_OF_HOMEPOINT,
-                                                         (uint8_t *) &AltHomepoint,
-                                                          sizeof(T_DjiFcSubscriptionAltitudeOfHomePoint),
-                                                          &timestamp);
-        if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-            USER_LOG_ERROR("get value of topic altitude_homepoint error.");
-        } else {
-            USER_LOG_INFO(
-                "{\"home_altitude\":%f}",
-                AltHomepoint);
-        }
-
-        djiStat = DjiFcSubscription_GetLatestValueOfTopic(DJI_FC_SUBSCRIPTION_TOPIC_RTK_CONNECT_STATUS,
-                                                          (uint8_t *) &RTKConnectStatus,
-                                                          sizeof(T_DjiFcSubscriptionRTKConnectStatus),
-                                                          &timestamp);
-        if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-            USER_LOG_ERROR("get value of topic rtk connect status error.");
-        } else {
-            USER_LOG_INFO(
-                "{\"rtk_connection\":%hu}",
-                RTKConnectStatus.rtkConnected);
-        }
-
-        djiStat = DjiFcSubscription_GetLatestValueOfTopic(DJI_FC_SUBSCRIPTION_TOPIC_GPS_DATE,
-                                                          (uint8_t *) &gpsData,
-                                                          sizeof(T_DjiFcSubscriptionGpsDate),
-                                                          &timestamp);
-        if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-            USER_LOG_ERROR("get value of topic gps date error.");
-         } else {
-            USER_LOG_INFO(
-                "{\"gps_date\":%d}",
-                gpsData);
-        }
     }
 
     djiStat = DjiFcSubscription_UnSubscribeTopic(DJI_FC_SUBSCRIPTION_TOPIC_QUATERNION);
@@ -317,6 +400,11 @@ T_DjiReturnCode DjiTest_FcSubscriptionRunSample(void)
         return DJI_ERROR_SYSTEM_MODULE_CODE_UNKNOWN;
     }
 
+    djiStat = DjiFcSubscription_UnSubscribeTopic(DJI_FC_SUBSCRIPTION_TOPIC_GPS_DETAILS);
+    if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+        USER_LOG_ERROR("UnSubscribe topic gps details error.");
+        return DJI_ERROR_SYSTEM_MODULE_CODE_UNKNOWN;
+    }
     djiStat = DjiFcSubscription_UnSubscribeTopic(DJI_FC_SUBSCRIPTION_TOPIC_GPS_TIME);
     if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
         USER_LOG_ERROR("UnSubscribe topic gpstimes error.");
@@ -326,6 +414,38 @@ T_DjiReturnCode DjiTest_FcSubscriptionRunSample(void)
     djiStat = DjiFcSubscription_UnSubscribeTopic(DJI_FC_SUBSCRIPTION_TOPIC_GPS_DATE);
     if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
         USER_LOG_ERROR("UnSubscribe topic gpstimes error.");
+        return DJI_ERROR_SYSTEM_MODULE_CODE_UNKNOWN;
+    }
+
+    djiStat = DjiFcSubscription_UnSubscribeTopic(DJI_FC_SUBSCRIPTION_TOPIC_RTK_POSITION);
+    if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+        USER_LOG_ERROR("UnSubscribe topic rtk position error.");
+        return DJI_ERROR_SYSTEM_MODULE_CODE_UNKNOWN;
+    }
+
+    djiStat = DjiFcSubscription_UnSubscribeTopic(DJI_FC_SUBSCRIPTION_TOPIC_RTK_POSITION_INFO);
+    if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+        USER_LOG_ERROR("UnSubscribe topic rtk position info error.");
+        return DJI_ERROR_SYSTEM_MODULE_CODE_UNKNOWN;
+    }
+
+    /**
+    djiStat = DjiFcSubscription_UnSubscribeTopic(DJI_FC_SUBSCRIPTION_TOPIC_RTK_CONNECT_STATUS);
+    if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+        USER_LOG_ERROR("UnSubscribe topic rtk connect status error.");
+        return DJI_ERROR_SYSTEM_MODULE_CODE_UNKNOWN;
+    }
+    */
+
+    djiStat = DjiFcSubscription_UnSubscribeTopic(DJI_FC_SUBSCRIPTION_TOPIC_ALTITUDE_OF_HOMEPOINT);
+    if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+        USER_LOG_ERROR("UnSubscribe topic altitude of homepoint error.");
+        return DJI_ERROR_SYSTEM_MODULE_CODE_UNKNOWN;
+    }
+
+    djiStat = DjiFcSubscription_UnSubscribeTopic(DJI_FC_SUBSCRIPTION_TOPIC_COMPASS);
+    if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+        USER_LOG_ERROR("UnSubscribe topic compass error.");
         return DJI_ERROR_SYSTEM_MODULE_CODE_UNKNOWN;
     }
 
