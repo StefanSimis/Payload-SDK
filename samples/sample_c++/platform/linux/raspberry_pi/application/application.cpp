@@ -135,7 +135,7 @@ void Application::DjiUser_SetupEnvironment()
     printConsole.consoleLevel = DJI_LOGGER_CONSOLE_LOG_LEVEL_INFO;
     printConsole.isSupportColor = true;
 
-    localRecordConsole.consoleLevel = DJI_LOGGER_CONSOLE_LOG_LEVEL_DEBUG;
+    localRecordConsole.consoleLevel = DJI_LOGGER_CONSOLE_LOG_LEVEL_INFO;
     localRecordConsole.func = DjiUser_LocalWrite;
     localRecordConsole.isSupportColor = false;
 
@@ -198,19 +198,21 @@ void Application::DjiUser_SetupEnvironment()
         throw std::runtime_error("Register osal filesystem handler error.");
     }
 
-    if (DjiUser_LocalWriteFsInit(DJI_LOG_PATH) != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-        throw std::runtime_error("File system init error.");
-    }
+    //if (DjiUser_LocalWriteFsInit(DJI_LOG_PATH) != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+    //    throw std::runtime_error("File system init error.");
+    //}
 
     returnCode = DjiLogger_AddConsole(&printConsole);
     if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
         throw std::runtime_error("Add printf console error.");
     }
 
+    /**
     returnCode = DjiLogger_AddConsole(&localRecordConsole);
     if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
         throw std::runtime_error("Add printf console error.");
     }
+    */
 }
 
 void Application::DjiUser_ApplicationStart()
