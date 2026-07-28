@@ -30,15 +30,22 @@
 #include "dji_platform.h"
 #include "widget_interaction_test/test_widget_interaction.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 /* Private constants ---------------------------------------------------------*/
 #define FC_SUBSCRIPTION_TASK_FREQ         (5)
 #define FC_SUBSCRIPTION_TASK_STACK_SIZE   (1024)
+#define HYFLY_CALLBACK_SCRIPT "/home/sorad/dji-psdk-builds/hyfly-callback.sh"
 
 /* Private types -------------------------------------------------------------*/
 
 /* Private functions declaration ---------------------------------------------*/
 static T_DjiReturnCode DjiTest_FcSubscriptionReceiveQuaternionCallback(const uint8_t *data, uint16_t dataSize,
                                                                        const T_DjiDataTimestamp *timestamp);
+
+static void HyFly_StatusReader();
 
 /* Private variables ---------------------------------------------------------*/
 static T_DjiTaskHandle s_userFcSubscriptionThread;
@@ -177,8 +184,18 @@ T_DjiReturnCode DjiTest_FcSubscriptionRunSample(void)
     }
 
 
+    int count = 0;
+
     while (1) {
         osalHandler->TaskSleepMs(1000 / FC_SUBSCRIPTION_TASK_FREQ);
+
+
+        count++;
+
+        if (count % FC_SUBSCRIPTION_TASK_FREQ == 0) {
+            HyFly_StatusReader();
+        }
+
 
         djiStat_althome = DjiFcSubscription_GetLatestValueOfTopic(DJI_FC_SUBSCRIPTION_TOPIC_ALTITUDE_OF_HOMEPOINT,
                                                          (uint8_t *) &AltHomepoint,
@@ -253,7 +270,7 @@ T_DjiReturnCode DjiTest_FcSubscriptionRunSample(void)
 
             USER_LOG_INFO(
                 "{\"rtk_solution\":%d, \"gps_x\":%d,\"gps_y\":%d,\"gps_z\":%d, \"nsat\":%d, \"gps_fix\":%f, \"rtk_lon\":%lf, \"rtk_lat\":%lf, \"rtk_hfsl\":%f}",
-                rtkSolution, gpsPosition.x, gpsPosition.y, gpsPosition.z, GpsDetail.totalSatelliteNumberUsed, GpsDetail.fixState, PositionData.latitude, PositionData.longitude, PositionData.hfsl);
+                rtkSolution, gpsPosition.x, gpsPosition.y, gpsPosition.z, GpsDetail.totalSatelliteNumberUsed, GpsDetail.fixState, PositionData.longitude, PositionData.latitude, PositionData.hfsl);
         }
 
     }
@@ -333,6 +350,31 @@ T_DjiReturnCode DjiTest_FcSubscriptionRunSample(void)
     USER_LOG_INFO("Fc subscription sample end");
 
     return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
+}
+
+
+void HyFly_StatusReader(void)
+{
+    FILE *fp;
+    char buffer[1024];
+    char output[4096] = "";
+
+    fp = popen(HYFLY_CALLBACK_SCRIPT, "r");
+    if (fp == NULL) {
+        perror("Failed to open HyFly_StatusReader input script file");
+        return;
+    } else {
+
+        while (fgets(buffer, sizeof(buffer), fp) != NULL) {
+            strcat(output, buffer);
+        }
+
+        pclose(fp);
+
+        // printf("Script output:\n%s", output);
+        // report back to floating widget log on controller app
+        DjiTest_WidgetLogAppend("Hy-Fly: %s\n", output);
+    }
 }
 
 
